@@ -25,6 +25,7 @@ docker exec -it lara_11_app_demo php artisan route:list
 docker exec -it lara_11_app_demo php artisan test
 
 8. Use curl to check all product requests
+
 GET:
 curl -X GET http://localhost:8000/api/products
 
@@ -44,22 +45,34 @@ curl -X DELETE http://localhost:8000/api/products/1
 n. remove all dockers
 docker-compose down --volumes
 
-The below can execute directly outside the docker.
+The below can execute directly outside the docker. These commands are used during create the project.
+
 docker exec -it lara_11_app_demo php artisan make:migration create_products_table
+
 docker exec -it lara_11_app_demo php artisan migrate
+
 docker exec -it lara_11_app_demo php artisan install:api    // make sure the api can be access, it will change the bootstrap/app.php
+
 docker exec -it lara_11_app_demo php artisan make:model Product
+
 docker exec -it lara_11_app_demo php artisan make:controller api/ProductController --api
+
 docker exec -it lara_11_app_demo php artisan make:test api/ProductTest --unit
+
 docker exec -it lara_11_app_demo php artisan make:test api/ProductTest
 
 docker exec -it lara_11_app_demo php artisan make:factory ProductFactory
+
 docker exec -it lara_11_app_demo php artisan make:seeder ProductSeeder
+
 docker exec -it lara_11_app_demo php artisan migrate:refresh --seed
+
 docker exec -it lara_11_app_demo php artisan db:seed --class=ProductSeeder
 
 docker exec -it lara_11_app_demo php artisan route:clear
+
 docker exec -it lara_11_app_demo php artisan cache:clear
+
 docker exec -it lara_11_app_demo php artisan config:clear
 
 
