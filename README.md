@@ -1,66 +1,65 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+1. Open your terminal
+git clone https://github.com/ramseyjiang/lara-11-docker-demo.git
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+2. Go to the clone folder
+docker-compose up -d --build
 
-## About Laravel
+3. After all dockers are created, ho into docker
+docker exec -it lara_11_app_demo bash
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+4. Do migration and seed database.
+docker exec -it lara_11_app_demo php artisan migrate
+docker exec -it lara_11_app_demo php artisan migrate:refresh --seed
+docker exec -it lara_11_app_demo php artisan db:seed --class=ProductSeeder
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+5. Start php artisan server on port 8000
+php artisan serve --host=0.0.0.0 --port=8000
+http://0.0.0.0:8000/debug
+http://0.0.0.0:8000
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+6. Access mysqladmin, which is on port 8080
+http://0.0.0.0:8080/
 
-## Learning Laravel
+7. Check route list and all tests work
+docker exec -it lara_11_app_demo php artisan route:list
+docker exec -it lara_11_app_demo php artisan test
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+8. Use curl to check all product requests
+GET:
+curl -X GET http://localhost:8000/api/products
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+POST:
+curl -X POST http://localhost:8000/api/products \
+     -H "Content-Type: application/json" \
+     -d '{"name": "Laptop", "price": 1500, "stock": 10, "description":"asdas"}'
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+PUT:
+curl -X PUT http://localhost:8000/api/products/1 \
+     -H "Content-Type: application/json" \
+     -d '{"name": "Updated Laptop", "price": 1800}'
 
-## Laravel Sponsors
+DELETE:
+curl -X DELETE http://localhost:8000/api/products/1
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+n. remove all dockers
+docker-compose down --volumes
 
-### Premium Partners
+The below can execute directly outside the docker.
+docker exec -it lara_11_app_demo php artisan make:migration create_products_table
+docker exec -it lara_11_app_demo php artisan migrate
+docker exec -it lara_11_app_demo php artisan install:api    // make sure the api can be access, it will change the bootstrap/app.php
+docker exec -it lara_11_app_demo php artisan make:model Product
+docker exec -it lara_11_app_demo php artisan make:controller api/ProductController --api
+docker exec -it lara_11_app_demo php artisan make:test api/ProductTest --unit
+docker exec -it lara_11_app_demo php artisan make:test api/ProductTest
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+docker exec -it lara_11_app_demo php artisan make:factory ProductFactory
+docker exec -it lara_11_app_demo php artisan make:seeder ProductSeeder
+docker exec -it lara_11_app_demo php artisan migrate:refresh --seed
+docker exec -it lara_11_app_demo php artisan db:seed --class=ProductSeeder
 
-## Contributing
+docker exec -it lara_11_app_demo php artisan route:clear
+docker exec -it lara_11_app_demo php artisan cache:clear
+docker exec -it lara_11_app_demo php artisan config:clear
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
